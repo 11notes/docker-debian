@@ -35,6 +35,9 @@
         APP_VERSION=${APP_VERSION} \
         APP_ROOT=${APP_ROOT}
 
+  # :: app specific environment
+    ENV DEBIAN_FRONTEND=noninteractive
+
   # :: multi-stage
     COPY --from=util / /
     COPY ./rootfs /
@@ -42,6 +45,7 @@
 # :: INSTALL
   RUN set -ex; \
     apt update -y; \
+    apt upgrade -y; \
     apt install -y \
       adduser \
       curl \

@@ -17,8 +17,5 @@
     "built":{
       "debian":"https://debianlinux.org"
     }
-  },
-  "grype":{
-    "severity":"critical"
   }
 }
