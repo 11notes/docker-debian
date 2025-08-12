@@ -1,0 +1,21 @@
+{
+  "image":"11notes/debian",
+  "name":"debian",
+  "root":"/",
+  
+  "semver":{
+    "version":"12",
+    "stable":"12"
+  },
+
+  "readme":{
+    "description":"Debian base image",
+    "introduction":"Debian is a complete Free Operating System!",
+    "parent":{
+      "image":"debian"
+    },
+    "built":{
+      "debian":"https://debianlinux.org"
+    }
+  }
+}
