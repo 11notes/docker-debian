@@ -19,6 +19,6 @@
     }
   },
   "grype":{
-    "fail":false
+    "severity":"critical"
   }
 }
