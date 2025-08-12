@@ -43,6 +43,7 @@
   RUN set -ex; \
     apt update -y; \
     apt install -y \
+      adduser \
       curl \
       tini; \
     addgroup --gid ${APP_GID} docker; \
