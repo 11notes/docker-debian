@@ -4,7 +4,7 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      APP_VERSION=12
+      APP_VERSION=13
 
 # :: FOREIGN IMAGES
   FROM 11notes/util AS util
@@ -14,7 +14,7 @@
 # ║                       IMAGE                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: HEADER
-  FROM debian:${APP_VERSION}-slim
+  FROM debian:trixie-slim
 
   # :: default arguments
     ARG TARGETPLATFORM \
