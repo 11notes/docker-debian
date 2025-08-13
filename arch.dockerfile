@@ -10,6 +10,7 @@
   FROM 11notes/distroless AS distroless
   FROM 11notes/distroless:curl AS distroless-curl
   FROM 11notes/distroless:tini AS distroless-tini
+  FROM 11notes/distroless:upx AS distroless-upx
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -35,9 +36,18 @@
   COPY --from=distroless / /
   COPY --from=distroless-curl / /
   COPY --from=distroless-tini / /
+  COPY --from=distroless-upx / /
 
   RUN set -ex; \
     chmod +x -R /usr/local/bin;
+
+  RUN set -ex; \
+    find / -type f -executable -exec /usr/local/bin/upx -q --no-backup --best --ultra-brute "{}" \;
+
+  RUN set -ex; \
+    for FOLDER in /tmp/* /root/*; do \
+      rm -rf ${FOLDER}; \
+    done;
 
 
 # ╔═════════════════════════════════════════════════════╗
