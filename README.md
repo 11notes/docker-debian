@@ -68,11 +68,15 @@ docker pull quay.io/11notes/debian:13
 * [11notes/debian](https://github.com/11notes/docker-DEBIAN)
 
 # PARENT IMAGE 🏛️
-* [debian](${{ json_readme_parent_url }})
+> [!IMPORTANT]
+>This image is not based on another image but uses [scratch](https://hub.docker.com/_/scratch) as the starting layer.
+>The image consists of the following distroless layers that were added:
+>* [11notes/distroless](https://github.com/11notes/docker-distroless/blob/master/arch.dockerfile) - contains users, timezones and Root CA certificates
+>* [11notes/distroless:curl](https://github.com/11notes/docker-distroless/blob/master/curl.dockerfile) - app to execute HTTP requests
+>* 11notes/distroless:tini
 
 # BUILT WITH 🧰
 * [debian](https://debianlinux.org)
-* [11notes/util](https://github.com/11notes/docker-util)
 
 # GENERAL TIPS 📌
 > [!TIP]
@@ -82,4 +86,4 @@ docker pull quay.io/11notes/debian:13
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-debian/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-debian/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-debian/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 12.08.2025, 11:13:08 (CET)*
+*created 13.08.2025, 16:04:26 (CET)*
