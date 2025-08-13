@@ -47,7 +47,8 @@
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
       rm -rf ${FOLDER}; \
-    done;
+    done; \
+    rm -rf /usr/local/bin/upx;
 
 
 # ╔═════════════════════════════════════════════════════╗
