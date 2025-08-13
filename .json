@@ -11,11 +11,15 @@
   "readme":{
     "description":"Debian base image",
     "introduction":"Debian is a complete Free Operating System!",
-    "parent":{
-      "image":"debian"
-    },
     "built":{
       "debian":"https://debianlinux.org"
+    },
+    "distroless": {
+      "layers": [
+        "11notes/distroless",
+        "11notes/distroless:curl",
+        "11notes/distroless:tini"
+      ]
     }
   }
 }
