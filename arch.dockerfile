@@ -42,7 +42,7 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec /usr/local/bin/upx -q --no-backup --best --ultra-brute "{}" \;
+    find / -type f -executable -exec /usr/local/bin/upx -q --no-backup "{}" \;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
