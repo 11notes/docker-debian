@@ -45,9 +45,8 @@
     find / -type f -executable -exec /usr/local/bin/upx -q --no-backup "{}" \;
 
   RUN set -ex; \
-    for FOLDER in /tmp/* /root/*; do \
-      rm -rf ${FOLDER}; \
-    done; \
+    rm -rf /tmp/*; \
+    rm -rf /root/*; \
     rm -rf /usr/local/bin/upx;
 
 
