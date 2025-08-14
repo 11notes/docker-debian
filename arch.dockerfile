@@ -31,6 +31,7 @@
       APP_NO_CACHE
 
   ADD rootfs-${APP_VERSION}-${TARGETARCH}${TARGETVARIANT}.tar.gz /
+
   COPY --from=util / /
   COPY ./rootfs /
   COPY --from=distroless / /
@@ -42,11 +43,12 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec /usr/local/bin/upx -q --no-backup "{}" \; &> /dev/null;
+    find / -type f -executable -exec eleven shrink {} ';';
 
   RUN set -ex; \
-    rm -rf /tmp/*; \
-    rm -rf /root/*; \
+    for FOLDER in /tmp/* /root/*; do \
+      rm -rf ${FOLDER}; \
+    done; \
     rm -rf /usr/local/bin/upx;
 
 
