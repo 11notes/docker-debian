@@ -14,6 +14,28 @@ Debian is a complete Free Operating System!
 
 If used as a base image for your own image simply leave out your own **ENTRYPOINT** to use the default one and provide your own ```/usr/local/bin/entrypoint.sh```.
 
+# UNIQUE VALUE PROPOSITION 💶
+**Why should I run this image and not the other image(s) that already exist?** Good question! Because ...
+
+> [!IMPORTANT]
+>* ... this image runs [rootless](https://github.com/11notes/RTFM/blob/main/linux/container/image/rootless.md) as 1000:1000
+>* ... this image is automatically scanned for CVEs before and after publishing
+>* ... this image is created via a secure and pinned CI/CD process
+>* ... this image is very small
+
+If you value security, simplicity and optimizations to the extreme, then this image might be for you.
+
+# COMPARISON 🏁
+Below you find a comparison between this image and the most used or original one.
+
+| **image** | 11notes/debian:13 | debian:13-slim |
+| ---: | :---: | :---: |
+| **image size on disk** | 80.9MB | 78.6MB |
+| **process UID/GID** | 1000/1000 | 0/0 |
+| **distroless?** | ✅ | ❌ |
+| **rootless?** | ✅ | ❌ |
+
+
 # COMPOSE ✂️
 ```yaml
 name: "debian"
@@ -86,4 +108,4 @@ docker pull quay.io/11notes/debian:13
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-debian/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-debian/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-debian/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 13.08.2025, 16:04:26 (CET)*
+*created 14.08.2025, 02:25:47 (CET)*
