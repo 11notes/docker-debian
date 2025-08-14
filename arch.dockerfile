@@ -42,8 +42,10 @@
   RUN set -ex; \
     chmod +x -R /usr/local/bin;
 
-  RUN set -ex; \
-    find / -type f -executable -exec eleven shrink {} ';';
+  RUN find / -type f -executable > /tmp/shrink.log; \
+    while read FILE; do \
+      eleven shrink ${FILE}; \
+    done </tmp/shrink.log;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
