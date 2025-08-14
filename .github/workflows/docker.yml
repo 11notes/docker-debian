@@ -14,7 +14,7 @@ on:
         description: 'set runs-on for workflow (github or selfhosted)'
         type: string
         required: false
-        default: 'ubuntu-latest'
+        default: 'ubuntu-20.04'
 
 
       build:
