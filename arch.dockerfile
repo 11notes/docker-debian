@@ -42,7 +42,7 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec /usr/local/bin/upx -q --no-backup "{}" \;
+    find / -type f -executable -exec /usr/local/bin/upx -q --no-backup "{}" \; &> /dev/null;
 
   RUN set -ex; \
     rm -rf /tmp/*; \
