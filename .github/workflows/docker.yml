@@ -14,7 +14,7 @@ on:
         description: 'list of platforms to build for'
         type: string
         required: false
-        default: '["amd64", "arm64", "arm/v7"]'
+        default: "amd64,arm64,arm/v7"
 
       build:
         description: 'set WORKFLOW_BUILD'
@@ -36,13 +36,30 @@ on:
         required: false
 
 jobs:
+  matrix:
+    name: create job matrix
+    runs-on: ubuntu-latest
+    outputs:
+      stringify: ${{ steps.setup-matrix.outputs.stringify }}
+
+    steps:
+      # CONVERT MATRIX STRING TO LIST
+      - name: matrix / setup list
+        id: setup-matrix
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const platform = "${{ github.event.inputs.platform }}".
+              split(",");
+            core.setOutput('stringify', `["${platform.join(`","`)}"]`);
+
   docker:
     name: create container image
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
-        platform: ${{ fromJSON(github.event.inputs.platform) }}
+        platform: ${{ fromJSON(needs.matrix.outputs.stringify) }}
         include:
           - platform: amd64
             runner: ubuntu-24.04
@@ -69,6 +86,8 @@ jobs:
       attestations: write
       id-token: write
       security-events: write
+
+    needs: matrix
 
     steps:
       # ╔═════════════════════════════════════════════════════╗
