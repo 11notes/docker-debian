@@ -49,9 +49,7 @@ jobs:
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
-            const platform = "${{ github.event.inputs.platform }}".
-              split(",");
-            core.setOutput('stringify', `["${platform.join(`","`)}"]`);
+            core.setOutput('stringify', `["${"${{ github.event.inputs.platform }}".split(",").join(`","`)}"]`);
 
   docker:
     name: create container image
