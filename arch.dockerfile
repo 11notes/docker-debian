@@ -43,7 +43,19 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec eleven shrink {} ';';
+    cd /tmp; \
+    find / -type f -executable > /tmp/files; \
+    split -l $(($(wc -l < /tmp/files)/2)) /tmp/files;
+
+  RUN set -ex; \
+    while read FILE; do \
+      eleven shrink ${FILE}; \
+    done </tmp/xaa;
+
+  RUN set -ex; \
+    while read FILE; do \
+      eleven shrink ${FILE}; \
+    done </tmp/xab;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
