@@ -14,7 +14,7 @@ on:
         description: 'list of platforms to build for'
         type: string
         required: false
-        default: '["amd64", "arm64", "arm/v7"]'
+        default: "[\"amd64\", \"arm64\", \"arm/v7\"]"
 
       build:
         description: 'set WORKFLOW_BUILD'
@@ -42,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: ${{ fromJSON(github.event.inputs.platform) }}
+        platform: ${{ fromJSON(format('{0}{1}{2}', '"', github.event.inputs.platform, '"')) }}
         include:
           - platform: amd64
             runner: ubuntu-24.04
