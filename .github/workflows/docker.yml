@@ -40,7 +40,7 @@ jobs:
     name: create job matrix
     runs-on: ubuntu-latest
     outputs:
-      stringify_platform: ${{ steps.setup-matrix.outputs.stringify }}
+      stringify: ${{ steps.setup-matrix.outputs.stringify }}
 
     steps:
       - name: matrix / setup list
@@ -57,8 +57,8 @@ jobs:
                 case "arm/v7": matrix.include.push({platform:platform, runner:"ubuntu-24.04-arm"}); break;
               }
             }
-            const stringify = `["${"${{ github.event.inputs.platform }}".split(",").join(`","`)}"]`;
-            core.setOutput('stringify', JSON.stringify(matrix));
+            const stringify = JSON.stringify(matrix);
+            core.setOutput('stringify', stringify);
             core.info(stringify);
 
   docker:
