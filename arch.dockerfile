@@ -43,29 +43,7 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    cd /tmp; \
-    find / -type f -executable > /tmp/files; \
-    split -l $(($(wc -l < /tmp/files)/4)) /tmp/files;
-
-  RUN set -ex; \
-    while read FILE; do \
-      eleven shrink ${FILE}; \
-    done </tmp/xaa;
-
-  RUN set -ex; \
-    while read FILE; do \
-      eleven shrink ${FILE}; \
-    done </tmp/xab;
-
-  RUN set -ex; \
-    while read FILE; do \
-      eleven shrink ${FILE}; \
-    done </tmp/xac;
-
-  RUN set -ex; \
-    while read FILE; do \
-      eleven shrink ${FILE}; \
-    done </tmp/xad;
+    find / -type f -executable -exec eleven shrink {} ';';
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
