@@ -36,6 +36,13 @@ on:
         required: false
 
 jobs:
+  # ╔═════════════════════════════════════════════════════╗
+  # ║                                                     ║
+  # ║                                                     ║
+  # ║               CREATE PLATFORM MATRIX                ║
+  # ║                                                     ║
+  # ║                                                     ║
+  # ╚═════════════════════════════════════════════════════╝
   matrix:
     name: create job matrix
     runs-on: ubuntu-latest
@@ -61,6 +68,14 @@ jobs:
             core.setOutput('stringify', stringify);
             core.info(stringify);
 
+
+  # ╔═════════════════════════════════════════════════════╗
+  # ║                                                     ║
+  # ║                                                     ║
+  # ║                BUILD CONTAINER IMAGE                ║
+  # ║                                                     ║
+  # ║                                                     ║
+  # ╚═════════════════════════════════════════════════════╝
   docker:
     name: create container image
     runs-on: ${{ matrix.runner }}
@@ -477,7 +492,16 @@ jobs:
             }' \
             --fail
 
+  
+  # ╔═════════════════════════════════════════════════════╗
+  # ║                                                     ║
+  # ║                                                     ║
+  # ║         MERGE IMAGES INTO SINGLE MANIFEST           ║
+  # ║                                                     ║
+  # ║                                                     ║
+  # ╚═════════════════════════════════════════════════════╝
   merge_platform_images:
+    if: ${{ needs.docker.outputs.WORKFLOW_BUILD }} == 'true'
     name: merge platform images to a single manifest
     runs-on: ubuntu-latest
     strategy:
@@ -488,7 +512,6 @@ jobs:
     env:
       DOCKER_IMAGE_NAME: ${{ needs.docker.outputs.DOCKER_IMAGE_NAME }}
       DOCKER_IMAGE_MERGE_TAGS: ${{ needs.docker.outputs.DOCKER_IMAGE_MERGE_TAGS }}
-      WORKFLOW_BUILD: ${{ needs.docker.outputs.WORKFLOW_BUILD }}
 
     permissions:
       contents: read
@@ -531,7 +554,6 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # DOWNLOAD DIGESTS
       - name: platform merge / digest
-        if: env.WORKFLOW_BUILD == 'true'
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           path: ${{ runner.temp }}/digests
@@ -540,12 +562,10 @@ jobs:
 
       # SETUP BUILDX BUILDER
       - name: platform merge / buildx
-        if: env.WORKFLOW_BUILD == 'true'
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       # GET META DATA
       - name: platform merge / meta
-        if: env.WORKFLOW_BUILD == 'true'
         id: meta
         uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
         with:
@@ -555,7 +575,6 @@ jobs:
 
       # CREATE MANIFEST
       - name: platform merge / create manifest and push
-        if: env.WORKFLOW_BUILD == 'true'
         working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
@@ -563,6 +582,5 @@ jobs:
 
       # INSPECT MANIFEST
       - name: platform merge / inspect
-        if: env.WORKFLOW_BUILD == 'true'
         run: |
           docker buildx imagetools inspect ${{ matrix.registry }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
