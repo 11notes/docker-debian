@@ -43,7 +43,9 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec eleven shrink {} ';';
+    if [ "${TARGETARCH}${TARGETVARIANT}" != "armv7" ]; then \
+      find / -type f -executable -exec eleven shrink {} ';'; \
+    fi;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \

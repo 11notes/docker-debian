@@ -234,17 +234,13 @@ jobs:
               core.exportVariable('DOCKER_IMAGE_ARGUMENTS', arguments.join("\r\n"));
               core.exportVariable('DOCKER_IMAGE_DOCKERFILE', opt.input?.etc?.dockerfile || 'arch.dockerfile');
               core.exportVariable('DOCKER_IMAGE_PLATFORM_SANITIZED', docker.image.platform.sanitized);
+              core.exportVariable('DOCKER_IMAGE_NAME_AND_VERSION', `${docker.image.name}:${docker.app.version}`);
 
               core.exportVariable('WORKFLOW_BUILD', (opt.input?.build === undefined) ? false : opt.input.build);
               core.exportVariable('WORKFLOW_CREATE_RELEASE', (opt.input?.release === undefined) ? false : opt.input.release);
               core.exportVariable('WORKFLOW_CREATE_README', (opt.input?.readme === undefined) ? false : opt.input.readme);
               core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', (opt.dot?.grype?.fail === undefined) ? true : opt.dot.grype.fail);
               core.exportVariable('WORKFLOW_GRYPE_SEVERITY_CUTOFF', (opt.dot?.grype?.severity || 'high'));
-              if(opt.dot?.readme?.comparison){
-                core.exportVariable('WORKFLOW_CREATE_COMPARISON', true);
-                core.exportVariable('WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE', opt.dot.readme.comparison.image);
-                core.exportVariable('WORKFLOW_CREATE_COMPARISON_IMAGE', `${docker.image.name}:${docker.app.version}`);
-              }
 
 
       # ╔═════════════════════════════════════════════════════╗
@@ -408,23 +404,10 @@ jobs:
       # ╚═════════════════════════════════════════════════════╝
       # CHECKOUT HEAD TO BE UP TO DATE WITH EVERYTHING
       - name: README.md / checkout
-        if: matrix.platform == 'amd64'
+        if: env.WORKFLOW_CREATE_README == 'true' && matrix.platform == 'amd64'
         continue-on-error: true
         run: |
           git checkout HEAD
-
-      # COMPARE DOCKER IMAGE (will be moved to action in the future)
-      - name: docker / setup comparison images
-        if: env.WORKFLOW_CREATE_COMPARISON == 'true' &&  matrix.platform == 'amd64'
-        continue-on-error: true
-        run: |    
-          docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}
-          docker image ls --filter "reference=${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}" --format json | jq --raw-output '.Size' &> ./comparison.size0.log
-
-          docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }}
-          docker image ls --filter "reference=${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }}" --format json | jq --raw-output '.Size' &> ./comparison.size1.log
-
-          docker run --entrypoint "/bin/sh" --rm ${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }} -c id &> ./comparison.id.log
 
       # CREATE MAKRDOWN OF README.md
       - name: README.md / create
@@ -439,7 +422,7 @@ jobs:
       # UPLOAD README.md to DOCKER HUB
       - name: README.md / push to Docker Hub
         continue-on-error: true
-        if: steps.github-readme.outcome == 'success' && hashFiles('README_NONGITHUB.md') != '' && matrix.platform == 'amd64'
+        if: env.WORKFLOW_CREATE_README == 'true' && matrix.platform == 'amd64' && steps.github-readme.outcome == 'success' && hashFiles('README_NONGITHUB.md') != ''
         uses: christian-korneck/update-container-description-action@d36005551adeaba9698d8d67a296bd16fa91f8e8 # v1
         env:
           DOCKER_USER: 11notes
@@ -453,7 +436,7 @@ jobs:
       # COMMIT NEW README.md, LICENSE and compose
       - name: README.md / github commit & push
         continue-on-error: true
-        if: steps.github-readme.outcome == 'success' && hashFiles('README.md') != '' && matrix.platform == 'amd64'
+        if: env.WORKFLOW_CREATE_README == 'true' && matrix.platform == 'amd64' && steps.github-readme.outcome == 'success' && hashFiles('README.md') != ''
         run: |         
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
