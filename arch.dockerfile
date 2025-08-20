@@ -31,7 +31,6 @@
       APP_NO_CACHE
 
   ADD rootfs-${APP_VERSION}-${TARGETARCH}${TARGETVARIANT}.tar.gz /
-
   COPY --from=util / /
   COPY ./rootfs /
   COPY --from=distroless / /
@@ -40,11 +39,10 @@
   COPY --from=distroless-ds / /
 
   RUN set -ex; \
-    ls -lah /usr/local/bin; \
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -not -name "*.py" -exec /usr/local/bin/ds "{}" ";"; \
+    find / -type f -executable -exec /usr/local/bin/ds "{}" ";"; \
     /usr/local/bin/ds --bye;
 
   RUN set -ex; \
