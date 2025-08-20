@@ -31,6 +31,7 @@
       APP_NO_CACHE
 
   ADD rootfs-${APP_VERSION}-${TARGETARCH}${TARGETVARIANT}.tar.gz /
+
   COPY --from=util / /
   COPY ./rootfs /
   COPY --from=distroless / /
@@ -42,12 +43,13 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    rm -rf /tmp/*; \
-    rm -rf /root/*;
+    find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
+    /usr/local/bin/ds --bye;
 
   RUN set -ex; \
-    find / -type f -executable -exec /usr/local/bin/ds "{}" ";"; \
-    /usr/local/bin/ds --bye;
+    for FOLDER in /tmp/* /root/*; do \
+      rm -rf ${FOLDER}; \
+    done;
 
 
 # ╔═════════════════════════════════════════════════════╗
