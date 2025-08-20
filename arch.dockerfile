@@ -10,7 +10,7 @@
   FROM 11notes/distroless AS distroless
   FROM 11notes/distroless:curl AS distroless-curl
   FROM 11notes/distroless:tini AS distroless-tini
-  FROM 11notes/distroless:upx AS distroless-upx
+  FROM 11notes/distroless:ds AS distroless-ds
 
 
 # ╔═════════════════════════════════════════════════════╗
@@ -37,21 +37,20 @@
   COPY --from=distroless / /
   COPY --from=distroless-curl / /
   COPY --from=distroless-tini / /
-  COPY --from=distroless-upx / /
+  COPY --from=distroless-ds / /
 
   RUN set -ex; \
+    ls -lah /usr/local/bin; \
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    if [ "${TARGETARCH}${TARGETVARIANT}" != "armv7" ]; then \
-      find / -type f -executable -exec eleven shrink {} ';'; \
-    fi;
+    find / -type f -executable -not -name "*.py" -exec /usr/local/bin/ds "{}" ";"; \
+    /usr/local/bin/ds --bye;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
       rm -rf ${FOLDER}; \
-    done; \
-    rm -rf /usr/local/bin/upx;
+    done; 
 
 
 # ╔═════════════════════════════════════════════════════╗
