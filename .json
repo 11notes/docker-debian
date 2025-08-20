@@ -24,5 +24,8 @@
     "comparison": {
       "image": "debian:13-slim"
     }
+  },
+  "grype":{
+    "severity":"critical"
   }
 }

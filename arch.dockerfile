@@ -42,13 +42,12 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec /usr/local/bin/ds "{}" ";"; \
-    /usr/local/bin/ds --bye;
+    rm -rf /tmp/*; \
+    rm -rf /root/*;
 
   RUN set -ex; \
-    for FOLDER in /tmp/* /root/*; do \
-      rm -rf ${FOLDER}; \
-    done; 
+    find / -type f -executable -exec /usr/local/bin/ds "{}" ";"; \
+    /usr/local/bin/ds --bye;
 
 
 # ╔═════════════════════════════════════════════════════╗
