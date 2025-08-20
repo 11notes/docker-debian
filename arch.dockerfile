@@ -43,8 +43,10 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
-    /usr/local/bin/ds --bye;
+    if [ "${TARGETARCH}${TARGETVARIANT}" != "armv7" ]; then \
+      find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
+      /usr/local/bin/ds --bye; \
+    fi;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
