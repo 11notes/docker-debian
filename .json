@@ -2,14 +2,14 @@
   "image":"11notes/debian",
   "name":"debian",
   "root":"/",
-  
+
   "semver":{
-    "version":"13",
-    "stable":"13"
+    "version":"13.0",
+    "stable":"13.0"
   },
 
   "readme":{
-    "description":"Debian base image",
+    "description":"run Debian rootless",
     "introduction":"Debian is a complete Free Operating System!",
     "built":{
       "debian":"https://debianlinux.org"
