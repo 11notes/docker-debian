@@ -4,7 +4,7 @@
   "root": "/",
   "semver": {
     "version": "13.2.0",
-    "stable": "13.0"
+    "stable": "13.2.0"
   },
   "readme": {
     "description": "run Debian rootless",
