@@ -62,13 +62,13 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    if [ "${APP_VERSION}" == "13" ]; then \
+    if echo "${APP_VERSION}" | grep -q "13"; then \
       if [ "${TARGETARCH}${TARGETVARIANT}" != "armv7" ]; then \
         find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
         /usr/local/bin/ds --bye; \
       fi; \
     fi; \
-    if [ "${APP_VERSION}" == "12" ]; then \
+    if echo "${APP_VERSION}" | grep -q "12"; then \
       if [ "${TARGETARCH}${TARGETVARIANT}" == "amd64" ]; then \
         find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
         /usr/local/bin/ds --bye; \
