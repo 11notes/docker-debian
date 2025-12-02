@@ -1,7 +1,7 @@
 name: "debian"
 services:
   debian:
-    image: "11notes/debian:13"
+    image: "11notes/debian:13.2.0"
     environment:
       TZ: "Europe/Zurich"
     restart: "always"
