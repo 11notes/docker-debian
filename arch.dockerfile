@@ -16,8 +16,29 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
+# :: DEBIAN
+  FROM alpine AS source
+  ARG TARGETARCH \
+      TARGETVARIANT
+
+  RUN set -ex; \
+    apk --update --no-cache add \
+      pv \
+      tar \
+      xz \
+      wget; \
+    case "${TARGETARCH}${TARGETVARIANT}" in \
+      "amd64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-amd64/trixie/slim/oci/blobs/rootfs.tar.gz;; \
+      "arm64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm64v8/trixie/slim/oci/blobs/rootfs.tar.gz;; \
+      "armv7") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm32v7/trixie/slim/oci/blobs/rootfs.tar.gz;; \
+    esac; \
+    mkdir -p /distroless; \
+    pv /rootfs.tar.gz | tar xz -C /distroless;
+
+
 # :: FILE-SYSTEM
   FROM scratch AS build
+  COPY --from=source /distroless/ /
   ARG TARGETPLATFORM \
       TARGETOS \
       TARGETARCH \
@@ -29,8 +50,6 @@
       APP_UID \
       APP_GID \
       APP_NO_CACHE
-
-  ADD rootfs-${APP_VERSION}-${TARGETARCH}${TARGETVARIANT}.tar.gz /
 
   COPY --from=util / /
   COPY ./rootfs /
