@@ -1,18 +1,16 @@
 {
-  "image":"11notes/debian",
-  "name":"debian",
-  "root":"/",
-
-  "semver":{
-    "version":"13.0",
-    "stable":"13.0"
+  "image": "11notes/debian",
+  "name": "debian",
+  "root": "/",
+  "semver": {
+    "version": "13.2.0",
+    "stable": "13.0"
   },
-
-  "readme":{
-    "description":"run Debian rootless",
-    "introduction":"Debian is a complete Free Operating System!",
-    "built":{
-      "debian":"https://debianlinux.org"
+  "readme": {
+    "description": "run Debian rootless",
+    "introduction": "Debian is a complete Free Operating System!",
+    "built": {
+      "debian": "https://debianlinux.org"
     },
     "distroless": {
       "layers": [
@@ -25,7 +23,7 @@
       "image": "debian:13-slim"
     }
   },
-  "grype":{
-    "severity":"critical"
+  "grype": {
+    "severity": "critical"
   }
 }
