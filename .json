@@ -3,7 +3,7 @@
   "name": "debian",
   "root": "/",
   "semver": {
-    "version": "13.2.0",
+    "version": "13.3.0",
     "stable": "13.2.0"
   },
   "readme": {
