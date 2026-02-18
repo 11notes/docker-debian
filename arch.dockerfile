@@ -3,7 +3,8 @@
 # ╚═════════════════════════════════════════════════════╝
 # GLOBAL
   ARG APP_UID=1000 \
-      APP_GID=1000
+      APP_GID=1000 \
+      APP_VERSION=0
 
 # :: FOREIGN IMAGES
   FROM 11notes/util AS util
@@ -18,8 +19,10 @@
 # ╚═════════════════════════════════════════════════════╝
 # :: DEBIAN
   FROM alpine AS source
+  COPY --from=util / /
   ARG TARGETARCH \
-      TARGETVARIANT
+      TARGETVARIANT \
+      APP_VERSION
 
   RUN set -ex; \
     apk --update --no-cache add \
@@ -27,10 +30,11 @@
       tar \
       xz \
       wget; \
+    DEBIAN_VERSION=$(eleven debian versiontoname ${APP_VERSION}); \
     case "${TARGETARCH}${TARGETVARIANT}" in \
-      "amd64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-amd64/trixie/slim/oci/blobs/rootfs.tar.gz;; \
-      "arm64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm64v8/trixie/slim/oci/blobs/rootfs.tar.gz;; \
-      "armv7") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm32v7/trixie/slim/oci/blobs/rootfs.tar.gz;; \
+      "amd64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-amd64/${DEBIAN_VERSION}/slim/oci/blobs/rootfs.tar.gz;; \
+      "arm64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm64v8/${DEBIAN_VERSION}/slim/oci/blobs/rootfs.tar.gz;; \
+      "armv7") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm32v7/${DEBIAN_VERSION}/slim/oci/blobs/rootfs.tar.gz;; \
     esac; \
     mkdir -p /distroless; \
     pv /rootfs.tar.gz | tar xz -C /distroless;
