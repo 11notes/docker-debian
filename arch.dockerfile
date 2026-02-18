@@ -66,7 +66,7 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    find /bin /sbin /usr/bin /usr/sbin -type f -executable -exec /usr/local/bin/ds {} ';'; \
+    find /bin /sbin /usr/bin /usr/sbin -type f -executable -not -name "apt-key" -exec /usr/local/bin/ds {} ';'; \
     /usr/local/bin/ds --bye;
 
   RUN set -ex; \
