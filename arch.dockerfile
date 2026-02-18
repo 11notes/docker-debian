@@ -66,18 +66,8 @@
     chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
-    if echo "${APP_VERSION}" | grep -q "13"; then \
-      if [ "${TARGETARCH}${TARGETVARIANT}" != "armv7" ]; then \
-        find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
-        /usr/local/bin/ds --bye; \
-      fi; \
-    fi; \
-    if echo "${APP_VERSION}" | grep -q "12"; then \
-      if [ "${TARGETARCH}${TARGETVARIANT}" == "amd64" ]; then \
-        find / -type f -executable -exec /usr/local/bin/ds {} ';'; \
-        /usr/local/bin/ds --bye; \
-      fi; \
-    fi;
+    find /bin /sbin /usr/bin /usr/sbin -type f -executable -exec /usr/local/bin/ds {} ';'; \
+    /usr/local/bin/ds --bye;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
