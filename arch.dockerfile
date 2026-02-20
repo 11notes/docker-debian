@@ -79,6 +79,11 @@
       rm -rf ${FOLDER}; \
     done;
 
+  RUN set -ex; \
+    chmod 0644 \
+      /etc/group \
+      /etc/passwd;
+
 
 # ╔═════════════════════════════════════════════════════╗
 # ║                       IMAGE                         ║
