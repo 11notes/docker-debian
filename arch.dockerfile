@@ -8,7 +8,6 @@
 
 # :: FOREIGN IMAGES
   FROM 11notes/util AS util
-  FROM 11notes/distroless AS distroless
   FROM 11notes/distroless:curl AS distroless-curl
   FROM 11notes/distroless:tini AS distroless-tini
   FROM 11notes/distroless:ds AS distroless-ds
@@ -17,53 +16,24 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
+# :: CERTIFICATES
+  FROM debian:${APP_VERSION}-slim AS ca-certificates
+  ENV DEBIAN_FRONTEND=noninteractive
+
+  RUN set -ex; \
+    apt update -y; \
+    apt install -y \
+      ca-certificates; \
+    mkdir -p /distroless/usr/share/ca-certificates; \
+    mkdir -p /distroless/etc/ssl/certs; \
+    cp -R /usr/share/ca-certificates/* /distroless/usr/share/ca-certificates; \
+    cp -R /etc/ssl/certs/* /distroless/etc/ssl/certs;
+
 # :: DEBIAN
-  FROM alpine AS source
-  COPY --from=util / /
-  ARG TARGETARCH \
-      TARGETVARIANT \
-      APP_VERSION
-
-  RUN set -ex; \
-    apk --update --no-cache add \
-      pv \
-      tar \
-      xz \
-      wget; \
-    DEBIAN_VERSION=$(eleven debian versiontoname ${APP_VERSION}); \
-    case "${TARGETARCH}${TARGETVARIANT}" in \
-      "amd64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-amd64/${DEBIAN_VERSION}/slim/oci/blobs/rootfs.tar.gz;; \
-      "arm64") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm64v8/${DEBIAN_VERSION}/slim/oci/blobs/rootfs.tar.gz;; \
-      "armv7") wget -q --show-progress --progress=bar:force https://github.com/debuerreotype/docker-debian-artifacts/raw/refs/heads/dist-arm32v7/${DEBIAN_VERSION}/slim/oci/blobs/rootfs.tar.gz;; \
-    esac; \
-    mkdir -p /distroless; \
-    pv /rootfs.tar.gz | tar xz -C /distroless;
-
-
-# :: FILE-SYSTEM
-  FROM scratch AS build
-  COPY --from=source /distroless/ /
-  ARG TARGETPLATFORM \
-      TARGETOS \
-      TARGETARCH \
-      TARGETVARIANT \
-      APP_IMAGE \
-      APP_NAME \
-      APP_VERSION \
-      APP_ROOT \
-      APP_UID \
-      APP_GID \
-      APP_NO_CACHE
-
-  COPY --from=util / /
-  COPY ./rootfs /
-  COPY --from=distroless / /
-  COPY --from=distroless-curl / /
-  COPY --from=distroless-tini / /
+  FROM debian:${APP_VERSION}-slim AS build
+  COPY --from=ca-certificates /distroless/ /
   COPY --from=distroless-ds / /
-
-  RUN set -ex; \
-    chmod +x -R /usr/local/bin;
+  ENV DEBIAN_FRONTEND=noninteractive
 
   RUN set -ex; \
     find /bin /sbin /usr/bin /usr/sbin -type f -executable \
@@ -71,18 +41,29 @@
       -not -name "ctrlaltdel" \
       -not -name "wipefs" \
       -not -name "dpkg-maintscript-helper" \
+      -not -name "deb-systemd-helper" \
+      -not -name "update-rc.d" \
+      -not -name "invoke-rc.d" \
     -exec /usr/local/bin/ds {} ';'; \
     /usr/local/bin/ds --bye;
+
+  COPY --from=distroless-curl /usr/local/bin/ /usr/local/bin
+  COPY --from=distroless-tini / /
+  COPY --from=util / /
+  COPY ./rootfs /
+
+  RUN set -ex; \
+    echo "docker:x:1000:1000:docker:/:/sbin/nologin" >> /etc/passwd; \
+    echo "docker:x:1000:docker" >> /etc/group;
+
+  RUN set -ex; \
+    chmod +x -R /usr/local/bin;
 
   RUN set -ex; \
     for FOLDER in /tmp/* /root/*; do \
       rm -rf ${FOLDER}; \
     done;
 
-  RUN set -ex; \
-    chmod 0644 \
-      /etc/group \
-      /etc/passwd;
 
 
 # ╔═════════════════════════════════════════════════════╗
