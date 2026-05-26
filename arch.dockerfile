@@ -4,7 +4,8 @@
 # GLOBAL
   ARG APP_UID=1000 \
       APP_GID=1000 \
-      APP_VERSION=0
+      APP_VERSION=0 \
+      APP_MAJOR_MINOR_VERSION=0
 
 # :: FOREIGN IMAGES
   FROM 11notes/util AS util
