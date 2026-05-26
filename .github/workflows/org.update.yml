@@ -65,7 +65,6 @@ jobs:
                 switch('${{ github.event.repository.name }}'){
                   case 'docker-chrony': core.warning(`semver exception found for chrony version ${s}, setting version to major.minor`); return(s.split('.').slice(0, 2).join('.'));
                   case 'docker-cron': core.warning(`semver exception found for cron version ${s}, setting version to major.minor`); return(s.split('.').slice(0, 2).join('.'));
-                  case 'docker-debian': core.warning(`semver exception found for debian version ${s}, setting version to major.minor`); return(s.split('.').slice(0, 2).join('.'));
                 }
                 return(s);
               }

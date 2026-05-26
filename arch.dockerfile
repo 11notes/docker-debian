@@ -17,7 +17,7 @@
 # ║                       BUILD                         ║
 # ╚═════════════════════════════════════════════════════╝
 # :: CERTIFICATES
-  FROM debian:${APP_VERSION}-slim AS ca-certificates
+  FROM debian:${APP_MAJOR_MINOR_VERSION}-slim AS ca-certificates
   ENV DEBIAN_FRONTEND=noninteractive
 
   RUN set -ex; \
@@ -30,7 +30,7 @@
     cp -R /etc/ssl/certs/* /distroless/etc/ssl/certs;
 
 # :: DEBIAN
-  FROM debian:${APP_VERSION}-slim AS build
+  FROM debian:${APP_MAJOR_MINOR_VERSION}-slim AS build
   COPY --from=ca-certificates /distroless/ /
   COPY --from=distroless-ds / /
   ENV DEBIAN_FRONTEND=noninteractive

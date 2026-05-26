@@ -274,6 +274,12 @@ jobs:
             const semver = (
               (/stable|latest/i.test(docker.app.version)) ? [] : docker.app.version.split('.')
             );
+
+            // setup additional version tags
+            if(semver.length >= 2){
+              docker.app.major_minor_version = `${semver[0]}.${semver[1]}`;
+            }
+
             // setup tags
               if(!opt.dot?.semver?.disable?.rolling && !opt.input.etc?.semver?.disable?.rolling){
                 docker.image.tags.push('rolling');
