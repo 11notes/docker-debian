@@ -259,7 +259,7 @@ jobs:
                 const depSemver = semverValid(semverCoerce(result[dep]));
                 docker.app[`${dep}_version`] = `${result[dep]}`;
                 docker.app[`${dep}_major_minor_version`] = `${semverMajor(depSemver)}.${semverMinor(depSemver)}`;
-                docker.app[`${dep}_major_version`] = semverMajor(depSemver);
+                //docker.app[`${dep}_major_version`] = semverMajor(depSemver);
                 core.info(`setting APP_${String(dep).toUpperCase()}_VERSION to ${result[dep]}`);
               }
             }catch(e){
