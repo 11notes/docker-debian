@@ -1,0 +1,3 @@
+ignore:
+  - vulnerability: CVE-2026-42496
+    reason: "Postponed by Debian security team; no upstream package fix available yet."
